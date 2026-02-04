@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Book ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    font-family:'Dancing Script',cursive;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:radial-gradient(circle at top,rgba(255,200,215,.9),transparent 60%),linear-gradient(135deg,#fce4ec,#fff);
+    overflow:hidden;
+}
+
+/* HEADER */
+.countdown-wrapper{
+    position:absolute;
+    top:20px;
+    text-align:center;
+    color:#b3002d;
+}
+.title{font-size:28px}
+.countdown{font-size:16px;margin-top:6px}
+
+/* BOOK */
+.book{
+    width:320px;
+    height:420px;
+    perspective:1600px;
+    position:relative;
+}
+.book::after{
+    content:"";
+    position:absolute;
+    bottom:-50px;
+    left:-50px;
+    width:420px;
+    height:80px;
+    background:radial-gradient(ellipse,rgba(0,0,0,.35),transparent 70%);
+    filter:blur(14px);
+    z-index:-1;
+}
+
+/* PAGE */
+.page{
+    width:100%;
+    height:100%;
+    position:absolute;
+    padding:26px;
+    box-sizing:border-box;
+    background:
+        linear-gradient(to right,rgba(0,0,0,.05),transparent 14%),
+        repeating-linear-gradient(to bottom,#fffafc,#fffafc 24px,#f8eef2 25px);
+    border-radius:12px;
+    transform-origin:left;
+    transition:transform 1.2s cubic-bezier(.4,0,.2,1);
+    backface-visibility:hidden;
+    box-shadow:inset 6px 0 8px rgba(0,0,0,.08),0 18px 35px rgba(0,0,0,.18);
+}
+.page.flipped{transform:rotateY(-180deg)}
+
+.page-content{
+    font-size:21px;
+    line-height:1.7;
+    text-align:center;
+}
+
+.page-content img{
+    max-width:100%;
+    max-height:210px;
+    object-fit:contain;
+    display:block;
+    margin:14px auto 0;
+}
+
+/* LOCKED */
+.locked{
+    filter:blur(6px);
+    pointer-events:none;
+}
+
+/* BUTTON */
+button{
+    margin-top:18px;
+    padding:8px 22px;
+    border:none;
+    border-radius:20px;
+    background:#ff5c8a;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* CANDLE */
+.candle{
+    position:absolute;
+    bottom:12px;
+    right:-40px;
+    width:18px;
+    height:56px;
+    background:#f5e6c8;
+    border-radius:6px;
+}
+.candle::after{
+    content:"";
+    position:absolute;
+    top:-18px;
+    left:50%;
+    width:12px;
+    height:22px;
+    background:radial-gradient(circle,#ffd27d,#ff8c00 65%);
+    transform:translateX(-50%);
+    border-radius:50%;
+    animation:flicker .15s infinite alternate;
+    box-shadow:0 0 18px rgba(255,140,0,.9);
+}
+@keyframes flicker{from{opacity:.8}to{opacity:1}}
+
+/* PETALS */
+.petal{
+    position:absolute;
+    top:-40px;
+    width:14px;
+    height:18px;
+    background:radial-gradient(circle,#ff7a9c,#b3002d);
+    border-radius:60% 40%;
+    opacity:.25;
+    animation:fall linear infinite;
+}
+@keyframes fall{
+    to{transform:translateY(110vh) rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="countdown-wrapper">
+    <div class="title">Valentine Diary ❤️</div>
+    <div id="countdown" class="countdown"></div>
+</div>
+
+<div class="book" id="book">
+    <div class="candle"></div>
+</div>
+
+<script>
+/* 🔧 SETTINGS */
+const TEST_MODE = true;   // ← set FALSE when live
+const REDIRECT_URL = "https://vinaysingh09.github.io/february/";
+
+/* 🌹 ALL DAYS INCLUDING VALENTINE */
+const days = [
+ {day:"Rose Day 🌹",date:"2026-02-07",content:`A rose for you 💐<img src="https://cdn.pixabay.com/animation/2023/06/28/22/13/22-13-22-529_512.gif">`},
+ {day:"Propose Day 💍",date:"2026-02-08",content:`My feelings grew quietly 💖<img src="https://cdn.pixabay.com/animation/2022/11/14/21/10/21-10-03-954_512.gif">`},
+ {day:"Chocolate Day 🍫",date:"2026-02-09",content:`Sweet moments 🍫<img src="https://media3.giphy.com/media/l0ExiIVrgmhtUUOfS/giphy.gif">`},
+ {day:"Teddy Day 🧸",date:"2026-02-10",content:`Something soft for you 🧸<img src="https://media.tenor.com/7IOvHCCMaLkAAAAi/teddy-bear-fun.gif">`},
+ {day:"Promise Day 🤞",date:"2026-02-11",content:`A promise from my heart 🤍<img src="https://media3.giphy.com/media/GFtJhEvG3681y/giphy.gif">`},
+ {day:"Hug Day 🤗",date:"2026-02-12",content:`A warm hug 🤗<img src="https://media4.giphy.com/media/IzXiddo2twMmdmU8Lv/giphy.gif">`},
+ {day:"Kiss Day 💋",date:"2026-02-13",content:`Just one kiss 💋<img src="https://media.tenor.com/fvs8VE9jj_cAAAAi/gyaru-gyaru-pixel.gif">`},
+ {day:"Valentine Day ❤️",date:"2026-02-14",content:`My heart is yours ❤️<img src="https://media.tenor.com/Lv-jIjphgp8AAAAi/heart.gif"><br>A Special Note For You`}
+];
+
+const book = document.getElementById("book");
+
+days.forEach((item,i)=>{
+    const page = document.createElement("div");
+    page.className = "page";
+    page.style.zIndex = days.length - i;
+
+    const unlockDate = new Date(item.date + "T00:00:00");
+    const unlocked = TEST_MODE || new Date() >= unlockDate;
+
+    if(!unlocked) page.classList.add("locked");
+
+    let btn = "";
+
+    /* 🧪 TEST MODE */
+    if(TEST_MODE && i < days.length-1){
+        btn = `<button onclick="turnPage(${i})">Continue</button>`;
+    }
+
+    /* ❤️ REAL MODE → ONLY VALENTINE DAY */
+    if(!TEST_MODE && i === days.length-1 && unlocked){
+        btn = `<button onclick="redirect()">Continue ❤️</button>`;
+    }
+
+    /* 🧪 TEST MODE → Valentine redirect */
+    if(TEST_MODE && i === days.length-1){
+        btn = `<button onclick="redirect()">Continue ❤️</button>`;
+    }
+
+    page.innerHTML = `
+        <div class="page-content">
+            <strong>${item.day}</strong><br><br>
+            ${unlocked ? item.content : "⏳ Opens at 12:00 AM"}
+            <br>${btn}
+        </div>
+    `;
+
+    book.appendChild(page);
+});
+
+function turnPage(i){
+    document.querySelectorAll(".page")[i].classList.add("flipped");
+}
+
+function redirect(){
+    window.location.href = REDIRECT_URL;
+}
+
+/* COUNTDOWN TO VALENTINE */
+const cd = document.getElementById("countdown");
+const finalDate = new Date("2026-02-14T00:00:00");
+
+setInterval(()=>{
+    if(TEST_MODE){cd.innerHTML="🧪 Test Mode Active";return;}
+    const diff = finalDate - new Date();
+    if(diff <= 0){cd.innerHTML="❤️ Happy Valentine’s Day ❤️";return;}
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor(diff/3600000)%24;
+    const m = Math.floor(diff/60000)%60;
+    cd.innerHTML = `${d}d ${h}h ${m}m remaining`;
+},1000);
+
+/* PETALS */
+setInterval(()=>{
+    const p=document.createElement("div");
+    p.className="petal";
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=12+Math.random()*8+"s";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),20000);
+},1800);
+</script>
+
+</body>
+</html>
