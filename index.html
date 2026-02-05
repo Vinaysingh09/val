@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine Book ❤️</title>
+<title>Valentine Diary ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
 
@@ -77,7 +77,7 @@ body{
     max-height:210px;
     object-fit:contain;
     display:block;
-    margin:14px auto 0;
+    margin:5px auto 0;
 }
 
 /* LOCKED */
@@ -86,7 +86,7 @@ body{
     pointer-events:none;
 }
 
-/* BUTTON */
+/* BUTTON (only Valentine) */
 button{
     margin-top:18px;
     padding:8px 22px;
@@ -96,46 +96,6 @@ button{
     color:#fff;
     font-size:16px;
     cursor:pointer;
-}
-
-/* CANDLE */
-.candle{
-    position:absolute;
-    bottom:12px;
-    right:-40px;
-    width:18px;
-    height:56px;
-    background:#f5e6c8;
-    border-radius:6px;
-}
-.candle::after{
-    content:"";
-    position:absolute;
-    top:-18px;
-    left:50%;
-    width:12px;
-    height:22px;
-    background:radial-gradient(circle,#ffd27d,#ff8c00 65%);
-    transform:translateX(-50%);
-    border-radius:50%;
-    animation:flicker .15s infinite alternate;
-    box-shadow:0 0 18px rgba(255,140,0,.9);
-}
-@keyframes flicker{from{opacity:.8}to{opacity:1}}
-
-/* PETALS */
-.petal{
-    position:absolute;
-    top:-40px;
-    width:14px;
-    height:18px;
-    background:radial-gradient(circle,#ff7a9c,#b3002d);
-    border-radius:60% 40%;
-    opacity:.25;
-    animation:fall linear infinite;
-}
-@keyframes fall{
-    to{transform:translateY(110vh) rotate(360deg)}
 }
 </style>
 </head>
@@ -147,100 +107,113 @@ button{
     <div id="countdown" class="countdown"></div>
 </div>
 
-<div class="book" id="book">
-    <div class="candle"></div>
-</div>
+<div class="book" id="book"></div>
 
 <script>
 /* 🔧 SETTINGS */
 const TEST_MODE = false;   // ← set FALSE when live
 const REDIRECT_URL = "https://vinaysingh09.github.io/february/";
 
-/* 🌹 ALL DAYS INCLUDING VALENTINE */
+/* 🌹 DAYS */
 const days = [
- {day:"Rose Day 🌹",date:"2026-02-07",content:`A rose for you 💐<img src="https://cdn.pixabay.com/animation/2023/06/28/22/13/22-13-22-529_512.gif">`},
- {day:"Propose Day 💍",date:"2026-02-08",content:`My feelings grew quietly 💖<img src="https://cdn.pixabay.com/animation/2022/11/14/21/10/21-10-03-954_512.gif">`},
- {day:"Chocolate Day 🍫",date:"2026-02-09",content:`Sweet moments 🍫<img src="https://media3.giphy.com/media/l0ExiIVrgmhtUUOfS/giphy.gif">`},
- {day:"Teddy Day 🧸",date:"2026-02-10",content:`Something soft for you 🧸<img src="https://media.tenor.com/7IOvHCCMaLkAAAAi/teddy-bear-fun.gif">`},
- {day:"Promise Day 🤞",date:"2026-02-11",content:`A promise from my heart 🤍<img src="https://media3.giphy.com/media/GFtJhEvG3681y/giphy.gif">`},
- {day:"Hug Day 🤗",date:"2026-02-12",content:`A warm hug 🤗<img src="https://media4.giphy.com/media/IzXiddo2twMmdmU8Lv/giphy.gif">`},
- {day:"Kiss Day 💋",date:"2026-02-13",content:`Just one kiss 💋<img src="https://media.tenor.com/fvs8VE9jj_cAAAAi/gyaru-gyaru-pixel.gif">`},
- {day:"Valentine Day ❤️",date:"2026-02-14",content:`My heart is yours ❤️<img src="https://media.tenor.com/Lv-jIjphgp8AAAAi/heart.gif"><br>A Special Note For You`}
+ {day:"Rose Day 🌹",date:"2026-02-07",content:`गुलाब हो तुम मेरे दिल का, खिलते रहो हमेशा।। A rose for you 💐<img src="https://cdn.pixabay.com/animation/2023/06/28/22/13/22-13-22-529_512.gif">`},
+ {day:"Propose Day 💍",date:"2026-02-08",content:`My feelings grew quietly <strong>Only For You</strong> 💖<img src="https://cdn.pixabay.com/animation/2022/11/14/21/10/21-10-03-954_512.gif">`},
+ {day:"Chocolate Day 🍫",date:"2026-02-09",content:`तुम मेरे दिल की वो चॉकलेट हो, जिसे मैं हर दिन पिघलते हुए महसूस करता हूँ। 🍫<img src="https://media3.giphy.com/media/l0ExiIVrgmhtUUOfS/giphy.gif">`},
+ {day:"Teddy Day 🧸",date:"2026-02-10",content:`तुम मेरे लिए उस टेडी जैसे हो, जिसे मैं हर वक्त अपने पास रखना चाहता हूँ।" 🧸<img src="https://media.tenor.com/7IOvHCCMaLkAAAAi/teddy-bear-fun.gif">`},
+ {day:"Promise Day 🤞",date:"2026-02-11",content:`तू मुस्कुराती रहे, यही दुआ है मेरी, और तेरा साथ निभाना, यही वफ़ा है मेरी। A promise from my heart 🤍<img src="https://media3.giphy.com/media/GFtJhEvG3681y/giphy.gif">`},
+ {day:"Hug Day 🤗",date:"2026-02-12",content:`गले लगाने से दिल के सारे गम दूर हो जाते हैं। A warm hug 🤗<img src="https://media4.giphy.com/media/IzXiddo2twMmdmU8Lv/giphy.gif">`},
+ {day:"Kiss Day 💋",date:"2026-02-13",content:`तेरे होंठों की मुस्कान में, मेरी दुनिया बसती है… और तेरे होंठों का स्पर्श, मेरी रूह को सुकून देता है। Just one kiss 💋<img src="https://media.tenor.com/fvs8VE9jj_cAAAAi/gyaru-gyaru-pixel.gif">`},
+ {day:"Valentine Day ❤️",date:"2026-02-14",content:`माना बात कम करता हूँ, पर दिमाग में हर पल सिर्फ तेरे ही चर्चे हैं My heart is yours ❤️<img src="https://media.tenor.com/Lv-jIjphgp8AAAAi/heart.gif"><br>A Special Note For You`}
 ];
 
 const book = document.getElementById("book");
+const pages = [];
 
+/* CREATE PAGES */
 days.forEach((item,i)=>{
     const page = document.createElement("div");
     page.className = "page";
     page.style.zIndex = days.length - i;
-
-    const unlockDate = new Date(item.date + "T00:00:00");
-    const unlocked = TEST_MODE || new Date() >= unlockDate;
-
-    if(!unlocked) page.classList.add("locked");
-
-    let btn = "";
-
-    /* 🧪 TEST MODE */
-    if(TEST_MODE && i < days.length-1){
-        btn = `<button onclick="turnPage(${i})">Continue</button>`;
-    }
-
-    /* ❤️ REAL MODE → ONLY VALENTINE DAY */
-    if(!TEST_MODE && i === days.length-1 && unlocked){
-        btn = `<button onclick="redirect()">Continue ❤️</button>`;
-    }
-
-    /* 🧪 TEST MODE → Valentine redirect */
-    if(TEST_MODE && i === days.length-1){
-        btn = `<button onclick="redirect()">Continue ❤️</button>`;
-    }
-
     page.innerHTML = `
         <div class="page-content">
-            <strong>${item.day}</strong><br><br>
-            ${unlocked ? item.content : "⏳ Opens at 12:00 AM"}
-            <br>${btn}
-        </div>
-    `;
-
+            <strong>${item.day}</strong><br>
+            ${item.content}
+        </div>`;
     book.appendChild(page);
+    pages.push(page);
 });
 
-function turnPage(i){
-    document.querySelectorAll(".page")[i].classList.add("flipped");
+/* 🔄 LIVE LOGIC */
+function updateBook(){
+    const now = new Date();
+    let currentIndex = -1;
+
+    days.forEach((d,i)=>{
+        const unlock = new Date(d.date + "T00:00:00");
+        if(now >= unlock) currentIndex = i;
+    });
+
+    pages.forEach((p,i)=>{
+        if(i < currentIndex){
+            p.classList.add("flipped");
+        }else if(i === currentIndex){
+            p.classList.remove("locked");
+        }else{
+            p.classList.add("locked");
+        }
+    });
+
+    // Valentine redirect button
+    if(currentIndex === days.length-1){
+        pages[currentIndex].querySelector(".page-content").innerHTML +=
+        `<br><button onclick="location.href='${REDIRECT_URL}'">Continue ❤️</button>`;
+    }
+
+    updateCountdown(currentIndex);
 }
 
-function redirect(){
-    window.location.href = REDIRECT_URL;
-}
+/* ⏰ COUNTDOWN TO NEXT DAY */
+function updateCountdown(index){
+    const cd = document.getElementById("countdown");
 
-/* COUNTDOWN TO VALENTINE */
-const cd = document.getElementById("countdown");
-const finalDate = new Date("2026-02-14T00:00:00");
+    if(index === days.length-1){
+        cd.innerHTML = "❤️ Happy Valentine’s Day ❤️";
+        return;
+    }
 
-setInterval(()=>{
-    if(TEST_MODE){cd.innerHTML="🧪 Test Mode Active";return;}
-    const diff = finalDate - new Date();
-    if(diff <= 0){cd.innerHTML="❤️ Happy Valentine’s Day ❤️";return;}
-    const d = Math.floor(diff/86400000);
-    const h = Math.floor(diff/3600000)%24;
+    const nextDate = new Date(days[index+1].date + "T00:00:00");
+    const diff = nextDate - new Date();
+
+    const h = Math.floor(diff/3600000);
     const m = Math.floor(diff/60000)%60;
-    cd.innerHTML = `${d}d ${h}h ${m}m remaining`;
-},1000);
+    const s = Math.floor(diff/1000)%60;
 
-/* PETALS */
-setInterval(()=>{
-    const p=document.createElement("div");
-    p.className="petal";
-    p.style.left=Math.random()*100+"vw";
-    p.style.animationDuration=12+Math.random()*8+"s";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),20000);
-},1800);
+    cd.innerHTML = `Next page opens in ${h}h ${m}m ${s}s`;
+}
+
+/* 🧪 TEST MODE */
+/* 🧪 TEST MODE */
+if(TEST_MODE){
+    pages.forEach((p,i)=>{
+        p.classList.remove("locked");
+
+        const btn = document.createElement("button");
+
+        if(i < pages.length - 1){
+            btn.textContent = "Continue";
+            btn.onclick = () => p.classList.add("flipped");
+        } else {
+            btn.textContent = "Continue ❤️";
+            btn.onclick = () => location.href = REDIRECT_URL;
+        }
+
+        p.querySelector(".page-content").appendChild(btn);
+    });
+}else{
+    setInterval(updateBook,1000);
+    updateBook();
+}
 </script>
 
 </body>
 </html>
-
